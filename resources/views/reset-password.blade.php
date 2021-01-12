@@ -47,7 +47,7 @@
             <label for="inputPassword" class="visually-hidden">Repeat new password</label>
             <input type="password" name="re-password" id="inputRePassword" class="form-control" placeholder="Repeat New Password" autofocus>
             <br>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Reset password</button>
+            <button class="w-100 btn btn-lg btn-thundvel" type="submit">Reset password</button>
         </form>
     </main>
 

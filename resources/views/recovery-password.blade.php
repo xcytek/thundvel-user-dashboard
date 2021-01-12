@@ -44,7 +44,7 @@
                 <label for="inputEmail" class="visually-hidden">Email address</label>
                 <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" autofocus>
                 <br>
-                <button class="w-100 btn btn-lg btn-primary" type="submit">Recover password</button>
+                <button class="w-100 btn btn-lg btn-thundvel" type="submit">Recover password</button>
             </form>
     </main>
 

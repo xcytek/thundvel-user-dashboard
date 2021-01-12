@@ -36,4 +36,30 @@ class EmailXcytek implements IEmail
 
     }
 
+
+    public function sendVerifyAccount(array $data): bool
+    {
+        $user = $data['user'];
+        $code = $data['code'];
+
+
+        $email = new Email(__DIR__ . '/../vendor/xcytek/email_library/examples/templates/verify-account.php', [
+            'code' => $code,
+            'name' => $user->first_name,
+        ]);
+
+        $email->setUse([
+            'subject' => env('APP_NAME') . ' - Verify your account',
+            'to' => [
+                [
+                    'email' => $user->email,
+                    'name'  => $user->first_name . ' ' . $user->last_name
+                ]
+            ]
+        ]);
+
+        $emailSender = new EmailSender();
+
+        return $emailSender->send($email);
+    }
 }

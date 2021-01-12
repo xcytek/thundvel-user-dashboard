@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PasswordReset;
+use App\Models\Supplier;
 use App\Models\User;
 use Carbon\Carbon;
 use EmailFactory;
@@ -21,10 +22,11 @@ class Controller extends BaseController
     /**
      * Validate and do a user login
      *
+     * @param $supplier
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postLogin(Request $request)
+    public function postLogin($subdomain, Request $request)
     {
 
         $credentials = $request->only('email', 'password');
@@ -35,7 +37,13 @@ class Controller extends BaseController
 
         }
 
-        if (Auth::attempt($credentials) === true) {
+        if (@User::findByEmail($credentials['email'])->supplier_id !== @Supplier::findBySubdomain($subdomain)->id) {
+
+            session()->flash('error', 'The provided credentials do not match our records!');
+
+        }
+
+        elseif (Auth::attempt($credentials) === true) {
 
             $request->session()->regenerate();
 
@@ -43,7 +51,12 @@ class Controller extends BaseController
 
         }
 
-        session()->flash('error', 'The provided credentials do not match our records!');
+        else {
+
+            session()->flash('error', 'The provided credentials do not match our records!');
+
+        }
+
 
         return redirect()->back();
 
@@ -55,7 +68,7 @@ class Controller extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postRegister(Request $request)
+    public function postRegister($subdomain, Request $request)
     {
 
         if (
@@ -70,7 +83,10 @@ class Controller extends BaseController
 
             try {
 
+                $supplier = Supplier::findBySubdomain($subdomain);
+
                 User::create([
+                    'supplier_id' => $supplier->id,
                     'first_name' => $request->get('first_name'),
                     'last_name'  => $request->get('last_name'),
                     'email'      => $request->get('email'),
@@ -101,7 +117,7 @@ class Controller extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postProfile(Request $request)
+    public function postProfile($supplier, Request $request)
     {
         if (
             $request->filled(['first_name', 'last_name', 'email']) === false
@@ -134,7 +150,7 @@ class Controller extends BaseController
      * @param Request $request
      * @return
      */
-    public function postRecoveryPassword(Request $request)
+    public function postRecoveryPassword($subdomain, Request $request)
     {
 
         if ($request->filled(['email']) === false) {
@@ -147,7 +163,9 @@ class Controller extends BaseController
 
         $email = filter_var($request->get('email'), FILTER_SANITIZE_EMAIL);
 
-        $user = User::findByEmail($email);
+        $supplier = Supplier::findBySubdomain($subdomain);
+
+        $user = User::findByEmailAndSupplierId($email, $supplier->id);
 
         if (is_null($user) === false) {
 
@@ -159,7 +177,7 @@ class Controller extends BaseController
 
                 $sent = EmailFactory::getInstance()->getService(env('EMAIL_INSTANCE'))->sendRecovery([
                     'user' => $user,
-                    'link' => env('APP_URL') . '/reset-password/' . $token
+                    'link' => str_replace('{subdomain}', $subdomain, env('APP_URL')) . '/reset-password/' . $token
                 ]);
 
                 if ($sent !== true) {
@@ -190,7 +208,7 @@ class Controller extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postResetPassword(Request $request)
+    public function postResetPassword($supplier, Request $request)
     {
 
         $passwordReset = PasswordReset::findByToken($request->get('token'));
@@ -229,6 +247,74 @@ class Controller extends BaseController
         }
 
         return redirect()->back();
+
+    }
+
+    public function getVerifyAccount($supplier, Request $request)
+    {
+
+        $user = User::find(auth()->user()->id);
+
+        if (is_null($user->email_verified_at) === false) {
+
+            session()->flash('success', 'Your account is already verified!');
+
+            return redirect()->to('/my-profile');
+
+        }
+
+        try {
+
+            $code = rand(10000 , 99999);
+
+            $sent = EmailFactory::getInstance()->getService(env('EMAIL_INSTANCE'))->sendVerifyAccount([
+                'user' => $user,
+                'code' => $code,
+            ]);
+
+            if ($sent !== true) {
+
+                session()->flash('error', 'Verify account email couldn\'t be sent. Try again!');
+
+                return redirect()->back();
+
+            }
+
+            $user->remember_token = $code;
+            $user->save();
+
+            return view('verify-account');
+
+        } catch (\Exception $e) {
+
+            session()->flash('error', 'Verify account failed!');
+
+            return redirect()->back();
+
+        }
+    }
+
+    public function postVerifyAccount($supplier, Request $request)
+    {
+
+        $user = User::find(auth()->user()->id);
+
+        if ($request->has('code') === false || $user->remember_token !== $request->get('code')) {
+
+            session()->flash('error', 'Invalid code!');
+
+        }
+
+        else {
+
+            $user->email_verified_at = Carbon::now();
+            $user->save();
+
+            session()->flash('success', 'Congrats, your account has been verified!');
+
+        }
+
+        return redirect()->to('/my-profile');
 
     }
 

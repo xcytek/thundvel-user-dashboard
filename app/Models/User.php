@@ -18,6 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
+        'supplier_id',
         'first_name',
         'last_name',
         'email',
@@ -51,5 +52,11 @@ class User extends Authenticatable
     {
         return static::where('email', $email)->first();
     }
+
+    public static function findByEmailAndSupplierId($email, $supplierId)
+    {
+        return static::where('email', $email)->where('supplier_id', $supplierId)->first();
+    }
+
 
 }

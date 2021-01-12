@@ -3,6 +3,7 @@
 @section('container')
 
     <style>
+
         .form-signin {
             width: 100%;
             max-width: 330px;
@@ -32,29 +33,21 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+        input[type=text] {
+            text-align: center;
+        }
     </style>
 
     <main class="form-signin">
-        <form action="/register" method="post">
+        <form action="/verify-account" method="post">
             @csrf
             <br><br>
             <p class="h5 my-0 me-md-auto fw-normal thundvel" style="text-align: center; font-size: 48px;">Thundvel</p>
             <br>
-            <label for="inputFirstName" class="visually-hidden">First Name</label>
-            <input type="text" name="first_name" id="inputFirstName" class="form-control" placeholder="First name" autofocus>
+            <label for="inputCode" class="visually-hidden">Verify code</label>
+            <input type="text" name="code" id="inputCode" class="form-control" placeholder="Verify code" autofocus>
             <br>
-            <label for="inputLastName" class="visually-hidden">Last Name</label>
-            <input type="text" name="last_name" id="inputLastEmail" class="form-control" placeholder="Last name">
-            <br>
-            <label for="inputEmail" class="visually-hidden">Email address</label>
-            <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address">
-            <br>
-            <label for="inputPassword" class="visually-hidden">Password</label>
-            <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password">
-            <br>
-            <a href="{{ url('/login') }}">Already have an account?</a>
-            <br><br>
-            <button class="w-100 btn btn-lg btn-thundvel" type="submit">Sign up</button>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Verify account</button>
         </form>
     </main>
 

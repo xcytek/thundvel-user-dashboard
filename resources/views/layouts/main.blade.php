@@ -41,6 +41,30 @@
             font-weight: 600;
             color: #cb373d;
         }
+
+        .supplier-name {
+            font-weight: 300;
+            font-size: 14px;
+        }
+
+        .btn-thundvel {
+            background-color: #cb373d;
+            color: white;
+        }
+
+        .btn-outline-thundvel {
+            background-color: transparent;
+            color: #cb373d;
+            border-color: #cb373d;
+        }
+
+        a {
+            color: #cb373d;
+        }
+
+        a:hover {
+            color: #cb373d;
+        }
     </style>
 
 
@@ -50,17 +74,17 @@
 <body>
 
 <header class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-    <p class="h5 my-0 me-md-auto fw-normal thundvel">Thundvel</p>
+    <p class="h5 my-0 me-md-auto fw-normal"><span class="thundvel">Thundvel</span> @if (isset($supplier))<span class="supplier-name">{{ $supplier }} @endif</span></p>
     <nav class="my-2 my-md-0 me-md-3">
         @auth
             <a href="{{ url('/dashboard') }}" class="p-2 text-dark">Dashboard</a>
-            <a href="{{ route('profile') }}" class="p-2 text-dark">My Profile</a>
-            <a href="{{ route('logout') }}" class="p-2 text-dark">Logout</a>
+            <a href="{{ url('/my-profile') }}" class="p-2 text-dark">My Profile</a>
+            <a href="{{ url('/logout') }}" class="p-2 text-dark">Logout</a>
         @else
-            <a href="{{ route('login') }}" class="p-2 text-dark">Login</a>
+            <a href="{{ url('/login') }}" class="p-2 text-dark">Login</a>
 
             @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="btn btn-outline-primary">Register</a>
+                <a href="{{ url('/register') }}" class="btn btn-outline-thundvel">Register</a>
             @endif
         @endauth
 
@@ -81,6 +105,13 @@
         You will receive an email with instructions to reset your password!
     </div>
 @endif
+
+@if (is_null(auth()->user()) === false && is_null(auth()->user()->email_verified_at) === true)
+    <div class="alert alert-warning" role="alert">
+        Your account has not been verified yet, <a href="{{ url('/verify-account') }}"> verify now!</a>
+    </div>
+@endif
+
 
 @yield('container')
 

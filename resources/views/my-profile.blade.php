@@ -47,7 +47,7 @@
             <label for="inputEmail" class="visually-hidden">Email address</label>
             <input type="email" value="{{ $user->email }}" name="email" id="inputEmail" class="form-control" placeholder="Email address">
             <br>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Update my profile</button>
+            <button class="w-100 btn btn-lg btn-thundvel" type="submit">Update my profile</button>
         </form>
     </main>
 

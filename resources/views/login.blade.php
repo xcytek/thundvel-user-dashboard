@@ -46,9 +46,9 @@
             <br>
             <label for="inputPassword" class="visually-hidden">Password</label>
             <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password">
-            <a href="{{ route('recovery-password') }}">Forgot password?</a>
+            <a href="{{ url('/recovery-password') }}">Forgot password?</a>
             <br><br>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+            <button class="w-100 btn btn-lg btn-thundvel" type="submit">Sign in</button>
         </form>
     </main>
 

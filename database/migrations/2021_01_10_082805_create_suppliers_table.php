@@ -19,6 +19,7 @@ class CreateSuppliersTable extends Migration
             $table->string('country');
             $table->string('industry');
             $table->string('website');
+            $table->string('subdomain');
             $table->string('contact_name');
             $table->string('phone');
             $table->string('email');
