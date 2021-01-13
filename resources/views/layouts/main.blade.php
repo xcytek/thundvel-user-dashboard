@@ -52,10 +52,19 @@
             color: white;
         }
 
+        .btn-thundvel:hover {
+            color: #d4babc;
+        }
+
         .btn-outline-thundvel {
             background-color: transparent;
             color: #cb373d;
             border-color: #cb373d;
+        }
+
+        .btn-outline-thundvel:hover {
+            background-color: #cb373d;
+            color: white;
         }
 
         a {
@@ -74,11 +83,13 @@
 <body>
 
 <header class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-    <p class="h5 my-0 me-md-auto fw-normal"><span class="thundvel">Thundvel</span> @if (isset($supplier))<span class="supplier-name">{{ $supplier }} @endif</span></p>
+    <p class="h5 my-0 me-md-auto fw-normal"><span class="thundvel">Thundvel</span> @if (isset($subdomain))<span class="supplier-name">{{ $subdomain }} @endif</span></p>
     <nav class="my-2 my-md-0 me-md-3">
         @auth
             <a href="{{ url('/dashboard') }}" class="p-2 text-dark">Dashboard</a>
+            <a href="{{ url('/workspaces') }}" class="p-2 text-dark">Workspaces</a>
             <a href="{{ url('/my-profile') }}" class="p-2 text-dark">My Profile</a>
+            <a href="{{ url('/settings') }}" class="p-2 text-dark">Settings</a>
             <a href="{{ url('/logout') }}" class="p-2 text-dark">Logout</a>
         @else
             <a href="{{ url('/login') }}" class="p-2 text-dark">Login</a>
