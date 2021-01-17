@@ -115,11 +115,21 @@
     <p class="h5 my-0 me-md-auto fw-normal"><span class="thundvel">Thundvel</span> @if (isset($subdomain))<span class="supplier-name">{{ $subdomain }} @endif</span></p>
     <nav class="my-2 my-md-0 me-md-3">
         @auth
-            <a href="{{ url('/dashboard') }}" class="p-2 text-dark">Dashboard</a>
-            <a href="{{ url('/workspaces') }}" class="p-2 text-dark">Workspaces</a>
-            <a href="{{ url('/my-profile') }}" class="p-2 text-dark">My Profile</a>
-            <a href="{{ url('/settings') }}" class="p-2 text-dark">Settings</a>
-            <a href="{{ url('/logout') }}" class="p-2 text-dark">Logout</a>
+            @if(auth()->user()->role->name === 'SuperAdmin')
+                <a href="{{ url('/admin/dashboard') }}" class="p-2 text-dark">Dashboard</a>
+                <a href="{{ url('/admin/suppliers') }}" class="p-2 text-dark">Suppliers</a>
+                <a href="{{ url('/admin/settings') }}" class="p-2 text-dark">Settings</a>
+                <a href="{{ url('/admin/users') }}" class="p-2 text-dark">Users</a>
+                <a href="{{ url('/admin/my-profile') }}" class="p-2 text-dark">My Profile</a>
+                <a href="{{ url('/logout') }}" class="p-2 text-dark">Logout</a>
+            @else
+                <a href="{{ url('/dashboard') }}" class="p-2 text-dark">Dashboard</a>
+                <a href="{{ url('/workspaces') }}" class="p-2 text-dark">Workspaces</a>
+                <a href="{{ url('/settings') }}" class="p-2 text-dark">Settings</a>
+                @if(auth()->user()->role->name === 'Admin')<a href="{{ url('/users') }}" class="p-2 text-dark">Users</a>@endif
+                <a href="{{ url('/my-profile') }}" class="p-2 text-dark">My Profile</a>
+                <a href="{{ url('/logout') }}" class="p-2 text-dark">Logout</a>
+            @endif
         @else
             <a href="{{ url('/login') }}" class="p-2 text-dark">Login</a>
 

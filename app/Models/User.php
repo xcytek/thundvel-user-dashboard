@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'supplier_id',
+        'role_id',
         'first_name',
         'last_name',
         'email',
@@ -45,6 +46,19 @@ class User extends Authenticatable
     ];
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function role()
+    {
+        return $this->hasOne(Role::class, 'id', 'role_id');
+    }
+
+    public function fullName()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    /**
      * @param $email
      * @return mixed
      */
@@ -56,6 +70,11 @@ class User extends Authenticatable
     public static function findByEmailAndSupplierId($email, $supplierId)
     {
         return static::where('email', $email)->where('supplier_id', $supplierId)->first();
+    }
+
+    public static function findBySubdomain($subdomain)
+    {
+        return static::where('supplier_id', Supplier::findBySubdomain($subdomain)->id)->orderBy('role_id', 'ASC')->get();
     }
 
 

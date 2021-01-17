@@ -38,6 +38,7 @@
             <br><br>
             <p class="h5 my-0 me-md-auto fw-normal" style="text-align: center;">My Profile</p>
             <br>
+            <p style="text-align: center; font-size: 22px;"><span class="badge bg-dark">{{ $user->role->name }}</span></p>
             <label for="inputFirstName" class="visually-hidden">First Name</label>
             <input type="text" value="{{ $user->first_name }}" name="first_name" id="inputFirstName" class="form-control" placeholder="First name" autofocus>
             <br>

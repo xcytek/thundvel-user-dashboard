@@ -11,6 +11,8 @@ class Supplier extends Model
 
     protected $table = 'suppliers';
 
+    protected $fillable = ['name', 'country', 'industry', 'website', 'subdomain', 'contact_name', 'phone', 'email'];
+
 
     public static function findBySubdomain($subdomain)
     {

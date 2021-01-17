@@ -14,10 +14,13 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
+use function Ramsey\Uuid\v1;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    private $superAdminRoleId = 3;
 
     /**
      * Validate and do a user login
@@ -43,9 +46,29 @@ class Controller extends BaseController
 
         }
 
+        elseif (@Supplier::findBySubdomain($subdomain)->is_enabled === 0) {
+
+            session()->flash('error', 'This supplier account has been disabled. Contact your administrator!');
+
+        }
+
+        elseif (@User::findByEmail($credentials['email'])->is_enabled === 0) {
+
+            session()->flash('error', 'This account has been disabled. Contact your administrator!');
+
+        }
+
         elseif (Auth::attempt($credentials) === true) {
 
             $request->session()->regenerate();
+
+            session()->flash('success', 'Welcome back, ' . auth()->user()->first_name);
+
+            if (auth()->user()->role_id === $this->superAdminRoleId) {
+
+                return redirect()->intended('admin/dashboard');
+
+            }
 
             return redirect()->intended('dashboard');
 

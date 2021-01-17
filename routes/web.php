@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspacesController;
 use App\Models\DataSource;
+use App\Models\Role;
+use App\Models\Supplier;
 use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::domain('{supplier}.' . env('APP_DOMAIN'))->group(function() {
 
+    Route::get('/', function() { return redirect()->to('/login'); });
+
     // Routes for login, register your supplier and recover password
     Route::get('/login', function($subdomain) { return view('login')->with('subdomain', $subdomain); })->name('login');
     Route::post('/login', [Controller::class, 'postLogin']);
@@ -34,6 +40,23 @@ Route::domain('{supplier}.' . env('APP_DOMAIN'))->group(function() {
     Route::get('/reset-password/{token}', function($subdomain, $token) { return view('reset-password')->with('subdomain', $subdomain)->with('token', $token); })->name('reset-password');
     Route::post('/reset-password', [Controller::class, 'postResetPassword']);
 
+    Route::middleware('super')->prefix('admin')->group(function() {
+        Route::get('/dashboard', function ($subdomain) { return view('dashboard')->with('subdomain', $subdomain); });
+        Route::get('/my-profile', function($subdomain) { return view('my-profile')->with('subdomain', $subdomain)->with('user', User::find(Auth::id())); })->name('profile');
+        Route::post('/my-profile', [Controller::class, 'postProfile']);
+        Route::get('/logout', function() { Auth::logout(); return redirect('/login'); })->name('logout');
+        Route::get('/verify-account', [Controller::class, 'getVerifyAccount'])->name('verify-account');
+        Route::post('/verify-account', [Controller::class, 'postVerifyAccount']);
+        Route::get('/users', function($subdomain) { return view('super.users.list')->with('subdomain', $subdomain)->with('users', User::findBySubdomain($subdomain)); });
+        Route::get('/user', function($subdomain) { return view('super.users.new')->with('subdomain', $subdomain)->with('roles', Role::all()); });
+        Route::get('/user/{id}/{action}', [UserController::class, 'changeStatus']);
+        Route::post('/user', [UserController::class, 'create']);
+        Route::get('/suppliers', function($subdomain) { return view('super.suppliers.list')->with('subdomain', $subdomain)->with('suppliers', Supplier::all()); });
+        Route::get('/supplier', function($subdomain) { return view('super.suppliers.new')->with('subdomain', $subdomain); });
+        Route::get('/supplier/{id}/{action}', [SupplierController::class, 'changeStatus']);
+        Route::post('/supplier', [SupplierController::class, 'create']);
+    });
+
     // Main Menu actions covered by Auth middleware
     Route::middleware(['auth'])->group(function() {
         Route::get('/dashboard', function ($subdomain) { return view('dashboard')->with('subdomain', $subdomain); });
@@ -42,6 +65,13 @@ Route::domain('{supplier}.' . env('APP_DOMAIN'))->group(function() {
         Route::get('/logout', function() { Auth::logout(); return redirect('/login'); })->name('logout');
         Route::get('/verify-account', [Controller::class, 'getVerifyAccount'])->name('verify-account');
         Route::post('/verify-account', [Controller::class, 'postVerifyAccount']);
+
+        Route::middleware('scope')->group(function () {
+            Route::get('/users', function($subdomain) { return view('users.list')->with('subdomain', $subdomain)->with('users', User::findBySubdomain($subdomain)); });
+            Route::get('/user', function($subdomain) { return view('users.new')->with('subdomain', $subdomain)->with('roles', Role::all()); });
+            Route::get('/user/{id}/{action}', [UserController::class, 'changeStatus']);
+            Route::post('/user', [UserController::class, 'create']);
+        });
 
         // Settings routes
         Route::get('/settings', function($subdomain) { return view('settings.get')->with('subdomain', $subdomain); });

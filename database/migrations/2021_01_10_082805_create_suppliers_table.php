@@ -23,6 +23,7 @@ class CreateSuppliersTable extends Migration
             $table->string('contact_name');
             $table->string('phone');
             $table->string('email');
+            $table->tinyInteger('is_enabled')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
