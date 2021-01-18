@@ -47,7 +47,7 @@ Route::domain('{supplier}.' . env('APP_DOMAIN'))->group(function() {
         Route::get('/logout', function() { Auth::logout(); return redirect('/login'); })->name('logout');
         Route::get('/verify-account', [Controller::class, 'getVerifyAccount'])->name('verify-account');
         Route::post('/verify-account', [Controller::class, 'postVerifyAccount']);
-        Route::get('/users', function($subdomain) { return view('super.users.list')->with('subdomain', $subdomain)->with('users', User::findBySubdomain($subdomain)); });
+        Route::get('/users', function($subdomain) { return view('super.users.list')->with('subdomain', $subdomain)->with('users', User::all()); });
         Route::get('/user', function($subdomain) { return view('super.users.new')->with('subdomain', $subdomain)->with('roles', Role::all()); });
         Route::get('/user/{id}/{action}', [UserController::class, 'changeStatus']);
         Route::post('/user', [UserController::class, 'create']);
@@ -87,3 +87,5 @@ Route::domain('{supplier}.' . env('APP_DOMAIN'))->group(function() {
 
 // Single landing page
 Route::get('/', function () { return view('welcome'); });
+Route::get('/signup', function () { return view('signup'); });
+Route::post('/signup', [Controller::class, 'signup']);

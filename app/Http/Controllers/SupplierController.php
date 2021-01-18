@@ -79,6 +79,15 @@ class SupplierController extends BaseController
             $supplier->is_enabled = ($action === 'enable') ? 1 : 0;
             $supplier->save();
 
+            $user = User::findByEmailAndSupplierId($supplier->email, $supplier->id);
+            if (is_null($user) === false) {
+
+                $user->is_enabled = 1;
+                $user->save();
+
+            }
+
+
             session()->flash('success', '"' . $supplier->name . '" account has been modified');
 
         }

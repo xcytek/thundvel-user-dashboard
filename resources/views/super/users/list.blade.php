@@ -15,6 +15,7 @@
         <table class="table table-striped">
             <tr>
                 <th>ID</th>
+                <th>Subdomain</th>
                 <th>Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
@@ -27,14 +28,15 @@
             @foreach($users as $user)
                 <tr>
                     <td>{{ $user->id }}</td>
+                    <td>{{ @$user->supplier->subdomain }}</td>
                     <td>{{ $user->first_name }}</td>
                     <td>{{ $user->last_name }}</td>
                     <td>{{ $user->email }}</td>
-                    <td>{{ $user->role->name }}</td>
-                    <td>@if($user->is_enabled) Enabled @else Disabled @endif</td>
+                    <td>{{ @$user->role->name }}</td>
+                    <td>@if($user->is_enabled) <span class="badge bg-success">Enabled</span> @else <span class="badge bg-danger">Disabled</span> @endif</td>
                     <td>{{ $user->created_at }}</td>
                     <td>
-                        @if($user->role->name !== 'SuperAdmin')
+                        @if(@$user->role->name !== 'SuperAdmin')
                             @if($user->is_enabled)
                                 <a href="/admin/user/{{ $user->id }}/disable">Disable</a>
                             @else
@@ -43,7 +45,7 @@
                         @endif
                     </td>
                     <td>
-                        @if($user->role->name !== 'SuperAdmin')
+                        @if(@$user->role->name !== 'SuperAdmin')
                             <a href="" class="btn btn-outline-danger">Delete</a>
                         @endif
                     </td>

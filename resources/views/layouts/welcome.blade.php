@@ -102,6 +102,19 @@
             margin: 0 0 15px 0;
             background-color: #165BD3
         }
+
+        .thundvel-text {
+            font-weight: 600;
+            font-size: 100px;
+            color: #cb373d;
+        }
+
+        .thundvel-small-text {
+            margin-top: -40px;
+            font-size: 20px;
+            color:black;
+        }
+
     </style>
 
 
@@ -113,30 +126,7 @@
 <header class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
     <p class="h5 my-0 me-md-auto fw-normal"><span class="thundvel">Thundvel</span> @if (isset($subdomain))<span class="supplier-name">{{ $subdomain }} @endif</span></p>
     <nav class="my-2 my-md-0 me-md-3">
-        @auth
-            @if(auth()->user()->role->name === 'SuperAdmin')
-                <a href="{{ url('/admin/dashboard') }}" class="p-2 text-dark">Dashboard</a>
-                <a href="{{ url('/admin/suppliers') }}" class="p-2 text-dark">Suppliers</a>
-                <a href="{{ url('/admin/settings') }}" class="p-2 text-dark">Settings</a>
-                <a href="{{ url('/admin/users') }}" class="p-2 text-dark">Users</a>
-                <a href="{{ url('/admin/my-profile') }}" class="p-2 text-dark">My Profile</a>
-                <a href="{{ url('/logout') }}" class="p-2 text-dark">Logout</a>
-            @else
-                <a href="{{ url('/dashboard') }}" class="p-2 text-dark">Dashboard</a>
-                <a href="{{ url('/workspaces') }}" class="p-2 text-dark">Workspaces</a>
-                <a href="{{ url('/settings') }}" class="p-2 text-dark">Settings</a>
-                @if(auth()->user()->role->name === 'Admin')<a href="{{ url('/users') }}" class="p-2 text-dark">Users</a>@endif
-                <a href="{{ url('/my-profile') }}" class="p-2 text-dark">My Profile</a>
-                <a href="{{ url('/logout') }}" class="p-2 text-dark">Logout</a>
-            @endif
-        @else
-            <a href="{{ url('/login') }}" class="p-2 text-dark">Login</a>
-
-            @if (Route::has('register'))
-                <a href="{{ url('/register') }}" class="btn btn-outline-thundvel">Register</a>
-            @endif
-        @endauth
-
+        <a href="{{ url('/signup') }}" class="p-2 text-dark">Sign up</a>
     </nav>
 </header>
 @if(session()->has('error') === true)
@@ -149,18 +139,6 @@
         {{ session()->get('success') }}
     </div>
 @endif
-@if (isset($sentRecovery) === true)
-    <div class="alert alert-success" role="alert">
-        You will receive an email with instructions to reset your password!
-    </div>
-@endif
-
-@if (is_null(auth()->user()) === false && is_null(auth()->user()->email_verified_at) === true)
-    <div class="alert alert-warning" role="alert">
-        Your account has not been verified yet, <a href="{{ url('/verify-account') }}"> verify now!</a>
-    </div>
-@endif
-
 
 @yield('container')
 

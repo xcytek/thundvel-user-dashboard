@@ -18,4 +18,10 @@ class Supplier extends Model
     {
         return static::where('subdomain', $subdomain)->first();
     }
+
+    public static function existsBySubdomain($subdomain)
+    {
+        return (! is_null(static::findBySubdomain($subdomain)));
+    }
+
 }

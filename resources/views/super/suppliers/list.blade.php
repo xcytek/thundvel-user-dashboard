@@ -37,7 +37,7 @@
                     <td>{{ $supplier->contact_name }}</td>
                     <td>{{ $supplier->phone }}</td>
                     <td>{{ $supplier->email }}</td>
-                    <td>@if($supplier->is_enabled) Enabled @else Disabled @endif</td>
+                    <td>@if($supplier->is_enabled) <span class="badge bg-success">Enabled</span> @else <span class="badge bg-danger">Disabled</span> @endif</td>
                     <td>{{ $supplier->created_at }}</td>
                     <td>
                         @if($supplier->is_enabled)

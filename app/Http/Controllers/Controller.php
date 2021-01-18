@@ -20,6 +20,10 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    private $adminRoleId = 1;
+
+    private $userRoleId = 2;
+
     private $superAdminRoleId = 3;
 
     /**
@@ -54,7 +58,7 @@ class Controller extends BaseController
 
         elseif (@User::findByEmail($credentials['email'])->is_enabled === 0) {
 
-            session()->flash('error', 'This account has been disabled. Contact your administrator!');
+            session()->flash('error', 'Your account has been disabled. Contact your administrator!');
 
         }
 
@@ -341,5 +345,54 @@ class Controller extends BaseController
 
     }
 
+    public function signup(Request $request)
+    {
+
+        if ($request->filled(['name', 'country', 'industry', 'website', 'subdomain', 'first_name', 'last_name', 'phone', 'email']) === false) {
+
+            session()->flash('error', 'Please, fill out all the fields with right data!');
+
+            return redirect()->back();
+
+        }
+
+        $firstName = $request->get('first_name');
+        $lastName  = $request->get('last_name');
+
+        $requestData = [
+            'name'          => $request->get('name'),
+            'country'       => $request->get('country'),
+            'industry'      => $request->get('industry'),
+            'website'       => $request->get('website'),
+            'subdomain'     => $request->get('subdomain'),
+            'contact_name'  => $firstName . ' ' . $lastName,
+            'email'         => $request->get('email'),
+            'phone'         => $request->get('phone'),
+        ];
+
+        if (Supplier::existsBySubdomain($requestData['subdomain']) === true) {
+
+            session()->flash('error', 'The subdomain is already taken!');
+
+            return redirect()->back();
+
+        }
+
+        $supplier = Supplier::create($requestData);
+
+        $user = User::create([
+            'supplier_id' => $supplier->id,
+            'role_id'     => $this->adminRoleId,
+            'first_name'  => $firstName,
+            'last_name'   => $lastName,
+            'email'       => $requestData['email'],
+            'password'    => bcrypt(rand(100, 1000))
+        ]);
+
+        session()->flash('success', 'Your application has been sent. Our team is going to review it and get back to you!');
+
+        return redirect()->to('/');
+
+    }
 
 }
