@@ -16,8 +16,8 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Country</th>
-                <th>Industry</th>
+{{--                <th>Country</th>--}}
+{{--                <th>Industry</th>--}}
                 <th>Subdomain</th>
                 <th>Contact Name</th>
                 <th>Phone</th>
@@ -30,9 +30,9 @@
             @foreach($suppliers as $supplier)
                 <tr>
                     <td>{{ $supplier->id }}</td>
-                    <td>{{ $supplier->name }}</td>
-                    <td>{{ $supplier->country }}</td>
-                    <td>{{ $supplier->industry }}</td>
+                    <td><a href="/admin/supplier/{{ $supplier->id }}">{{ $supplier->name }}</a></td>
+{{--                    <td>{{ $supplier->country }}</td>--}}
+{{--                    <td>{{ $supplier->industry }}</td>--}}
                     <td>{{ $supplier->subdomain }}</td>
                     <td>{{ $supplier->contact_name }}</td>
                     <td>{{ $supplier->phone }}</td>

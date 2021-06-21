@@ -20,7 +20,7 @@ class SupplierController extends BaseController
 
     private $adminRoleId = 1;
 
-    public function create($subdomain, Request $request)
+    public function save($subdomain, Request $request)
     {
         if (
             $request->filled(['name', 'country', 'industry', 'website', 'subdomain', 'contact_name', 'phone', 'email']) === false

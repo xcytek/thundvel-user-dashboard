@@ -31,6 +31,18 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+        .register-plan {
+            width: 100%;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .plan-active {
+            border: 2px solid #cb373d;
+            background-color: #f8d7da;
+        }
     </style>
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
@@ -71,6 +83,15 @@
                     <br>
                     <label for="inputEmail" class="visually-hidden">Email address</label>
                     <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address">
+                    <br>
+                    Select a plan <span style="font-size: 12px;"><a href="/#plans" target="_blank">(view plans)</a></span>
+                    <br><br>
+                    <input type="hidden" name="plan_id" value="1">
+                    @foreach($plans as $plan)
+                        <div class="register-plan" data-plan-id="{{ $plan->id }}">
+                            {{ $plan->name }} - ${{ number_format($plan->cost, 2) }} USD
+                        </div>
+                    @endforeach
                     <br><br>
                     <button class="w-100 btn btn-lg btn-thundvel" type="submit">Sign up</button>
                 </form>
@@ -78,4 +99,18 @@
         </div>
     </div>
 
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            $('.register-plan').first().addClass('plan-active');
+
+            $('.register-plan').click(function (e) {
+                $('.register-plan').removeClass('plan-active');
+                $(this).addClass('plan-active');
+                $('input[name=plan_id]').val($(this).attr('data-plan-id'));
+            });
+        });
+    </script>
 @endsection

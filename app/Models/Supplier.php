@@ -3,7 +3,6 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 
 class Supplier extends Model
@@ -13,6 +12,10 @@ class Supplier extends Model
 
     protected $fillable = ['name', 'country', 'industry', 'website', 'subdomain', 'contact_name', 'phone', 'email'];
 
+    public function myPlan()
+    {
+        return $this->hasOne(SupplierPlan::class, 'supplier_id', 'id');
+    }
 
     public static function findBySubdomain($subdomain)
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PasswordReset;
 use App\Models\Supplier;
+use App\Models\SupplierPlan;
 use App\Models\User;
 use Carbon\Carbon;
 use EmailFactory;
@@ -14,7 +15,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
-use function Ramsey\Uuid\v1;
 
 class Controller extends BaseController
 {
@@ -348,7 +348,7 @@ class Controller extends BaseController
     public function signup(Request $request)
     {
 
-        if ($request->filled(['name', 'country', 'industry', 'website', 'subdomain', 'first_name', 'last_name', 'phone', 'email']) === false) {
+        if ($request->filled(['name', 'country', 'industry', 'website', 'subdomain', 'first_name', 'last_name', 'phone', 'email', 'plan_id']) === false) {
 
             session()->flash('error', 'Please, fill out all the fields with right data!');
 
@@ -387,6 +387,11 @@ class Controller extends BaseController
             'last_name'   => $lastName,
             'email'       => $requestData['email'],
             'password'    => bcrypt(rand(100, 1000))
+        ]);
+
+        SupplierPlan::create([
+            'supplier_id' => $supplier->id,
+            'plan_id'     => $request->get('plan_id')
         ]);
 
         session()->flash('success', 'Your application has been sent. Our team is going to review it and get back to you!');

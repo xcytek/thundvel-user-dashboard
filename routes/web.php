@@ -5,6 +5,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspacesController;
 use App\Models\DataSource;
+use App\Models\Plan;
 use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\User;
@@ -53,8 +54,10 @@ Route::domain('{supplier}.' . env('APP_DOMAIN'))->group(function() {
         Route::post('/user', [UserController::class, 'create']);
         Route::get('/suppliers', function($subdomain) { return view('super.suppliers.list')->with('subdomain', $subdomain)->with('suppliers', Supplier::all()); });
         Route::get('/supplier', function($subdomain) { return view('super.suppliers.new')->with('subdomain', $subdomain); });
+        Route::get('/supplier/{id}', function($subdomain, $supplierId) { return view('super.suppliers.edit')->with('subdomain', $subdomain)->with('plans', Plan::all())->with('supplier', Supplier::find($supplierId)); });
         Route::get('/supplier/{id}/{action}', [SupplierController::class, 'changeStatus']);
-        Route::post('/supplier', [SupplierController::class, 'create']);
+        Route::post('/supplier', [SupplierController::class, 'save']);
+        Route::get('/settings', function($subdomain) { return view('super.settings.get')->with('subdomain', $subdomain); });
     });
 
     // Main Menu actions covered by Auth middleware
@@ -87,5 +90,5 @@ Route::domain('{supplier}.' . env('APP_DOMAIN'))->group(function() {
 
 // Single landing page
 Route::get('/', function () { return view('welcome'); });
-Route::get('/signup', function () { return view('signup'); });
+Route::get('/signup', function () { return view('signup')->with('plans', Plan::all()); });
 Route::post('/signup', [Controller::class, 'signup']);
